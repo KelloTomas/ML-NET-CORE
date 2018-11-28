@@ -45,7 +45,7 @@ namespace MLCore
 	new TextLoader(_datapath).CreateFrom<TaxiTrip>(useHeader: true, separator: ','),
 	new ColumnCopier(("FareAmount", "Label")),
 	new CategoricalOneHotVectorizer(        "VendorId",     "RateCode",     "PaymentType"),
-	new ColumnConcatenator("Features",     "VendorId",     "RateCode",     "PassengerCount",       "TripDistance",     "PaymentType"),
+				new ColumnConcatenator(     "Features",     "VendorId",     "RateCode",     "PassengerCount",       "TripDistance",     "PaymentType"),
 	new FastTreeRegressor()
 			};
 			/*
@@ -63,3 +63,4 @@ namespace MLCore
 		}
 	}
 }
+
