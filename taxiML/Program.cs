@@ -5,6 +5,7 @@ using Microsoft.ML.Legacy.Models;
 using Microsoft.ML.Legacy.Trainers;
 using Microsoft.ML.Legacy.Transforms;
 using Microsoft.ML.Runtime.Data;
+using Microsoft.ML.Runtime.EntryPoints;
 using Microsoft.ML.Trainers.FastTree;
 using System;
 using System.IO;
@@ -63,17 +64,19 @@ namespace MLCore
 			RegressionMetrics metrics = evaluator.Evaluate(modelOld, testData);
 			Console.WriteLine($"RSquared {metrics.RSquared}");
 		}
-
+		
 		public static async Task TrainOld()
 		{
 			var pipeline = new LearningPipeline
-{
+			{
 				new Microsoft.ML.Legacy.Data.TextLoader(_trainDataPath).CreateFrom<TaxiTrip>(useHeader: true, separator: ','),
 				new ColumnCopier(("FareAmount", "Label")),
 				new CategoricalOneHotVectorizer("VendorId", "RateCode", "PaymentType"),
 				new ColumnConcatenator("Features", "VendorId", "RateCode", "PassengerCount", "TripDistance", "PaymentType"),
 				new FastTreeRegressor()
 			};
+			
+			new KMeansPlusPlusClusterer();
 			modelOld = pipeline.Train<TaxiTrip, TaxiTripFarePrediction>();
 			await modelOld.WriteAsync(_modelPath);
 		}
