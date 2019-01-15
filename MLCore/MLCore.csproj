@@ -14,12 +14,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Data\taxi-fare-test.csv">
+    <None Update="Data\taxi\taxi-fare-test.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Data\taxi-fare-train.csv">
+    <None Update="Data\taxi\taxi-fare-train.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\train\" />
   </ItemGroup>
 
 </Project>
