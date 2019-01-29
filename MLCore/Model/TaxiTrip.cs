@@ -26,7 +26,7 @@ namespace MLCore.Model
         public float FareAmount;
     }
 
-    public class TaxiTripFarePrediction
+    public class TaxiFarePrediction
     {
         [ColumnName("Score")]
         public float FareAmount;

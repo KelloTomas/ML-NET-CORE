@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace MLCore
 {
-	internal class FastTreeNew : IModel
+	class TaxiFastTreeNew : IModel
 	{
 		private readonly string _trainDataPath = Path.Combine(Environment.CurrentDirectory, "Data\\taxi", "taxi-fare-train.csv");
 		private readonly string _testDataPath = Path.Combine(Environment.CurrentDirectory, "Data\\taxi", "taxi-fare-test.csv");
