@@ -24,31 +24,31 @@ namespace MLCore.Model
 			train.Prich = Convert.ToDateTime(values[12]);
 			train.GvdOdch = string.IsNullOrWhiteSpace(values[13]) ? Convert.ToDateTime(values[11]) : Convert.ToDateTime(values[13]);
 			train.GvdPrich = string.IsNullOrWhiteSpace(values[14]) ? Convert.ToDateTime(values[12]) : Convert.ToDateTime(values[14]);
-			train.MeskanieOdchod = (train.GvdOdch - train.Odch).TotalSeconds;
-			train.MeskaniePrichod = (train.GvdPrich - train.Prich).TotalSeconds;
-			train.CasCesty = (train.GvdPrich - train.GvdOdch).TotalSeconds;
+			train.MeskanieOdchod = (float)(train.GvdOdch - train.Odch).TotalSeconds;
+			train.MeskaniePrichod = (float)(train.GvdPrich - train.Prich).TotalSeconds;
+			train.CasCesty = (float)(train.GvdPrich - train.GvdOdch).TotalSeconds;
 			return train;
 		}
 		[Column("0")]
-		public int Bod1Cis;
+		public int Bod1Cis { get; set; }
 
 		[Column("1")]
 		public string Bod1Naz;
 
 		[Column("2")]
-		public int Bod2Cis;
+		public int Bod2Cis { get; set; }
 
 		[Column("3")]
 		public string Bod2Naz;
 
 		[Column("4")]
-		public double CasCesty;
+		public float CasCesty { get; set; }
 
 		[Column("5")]
-		public int Dlzka;
+		public float Dlzka { get; set; }
 
 		[Column("6")]
-		public string Druh;
+		public string Druh { get; set; }
 
 		[Column("7")]
 		public DateTime GvdOdch;
@@ -57,31 +57,31 @@ namespace MLCore.Model
 		public DateTime GvdPrich;
 
 		[Column("9")]
-		public int Hmot;
+		public float Hmot { get; set; }
 
 		[Column("10")]
-		public string Loko;
+		public string Loko { get; set; }
 
 		[Column("11")]
-		public double MeskanieOdchod;
+		public float MeskanieOdchod { get; set; }
 
 		[Column("12")]
-		public double MeskaniePrichod;
+		public float MeskaniePrichod;
 
 		[Column("13")]
 		public DateTime Odch;
 
 		[Column("14")]
-		public int PocNaprav;
+		public float PocNaprav { get; set; }
 
 		[Column("15")]
-		public int PocVoznov;
+		public float PocVoznov { get; set; }
 
 		[Column("16")]
 		public DateTime Prich;
 
 		[Column("17")]
-		public int Vlak;
+		public float Vlak { get; set; }
 	}
 
 	public class TrainFarePrediction

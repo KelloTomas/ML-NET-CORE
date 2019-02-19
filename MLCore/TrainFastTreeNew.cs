@@ -1,24 +1,22 @@
-﻿/*
-using Microsoft.ML;
-using Microsoft.ML.Core.Data;
-using Microsoft.ML.Legacy;
-using Microsoft.ML.Legacy.Models;
-using Microsoft.ML.Legacy.Trainers;
-using Microsoft.ML.Legacy.Transforms;
+﻿using Microsoft.ML;
 using Microsoft.ML.Runtime.Data;
-using Microsoft.ML.Runtime.EntryPoints;
 using Microsoft.ML.Trainers.FastTree;
 using MLCore.Model;
 using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
+using System.Linq;
 
 namespace MLCore
 {
-	class TrainFastTreeNew : IModel
+	internal class TrainFastTreeNew : IModel
 	{
-		private readonly string _trainDataPath = Path.Combine(Environment.CurrentDirectory, "Data", "train", "jazdne_doby_preos_20181008.csv");
-		private readonly string _testDataPath = Path.Combine(Environment.CurrentDirectory, "Data", "train", "jazdne_doby_preos_20181009.csv");
+		private string _dataPath(string date)
+		{
+			return Path.Combine(Environment.CurrentDirectory, "Data", "train", $"jazdne_doby_preos_{date}.csv");
+		}
+		private readonly string _trainDataNewPath = Path.Combine(Environment.CurrentDirectory, "Data", "train", "jazdne_doby_preos_train.csv");
+		private readonly string _testDataNewPath = Path.Combine(Environment.CurrentDirectory, "Data", "train", "jazdne_doby_preos_test.csv");
 		private readonly string _modelPath = Path.Combine(Environment.CurrentDirectory, "Data", "train", "FastTreeRegressionModel.zip");
 
 		private TextLoader _textLoader;
@@ -30,31 +28,71 @@ namespace MLCore
 
 		public void Init()
 		{
+			/*
+			to convert raw data to train and test data
+			List<Train> values = new List<Train>();
+			values.AddRange(File.ReadAllLines(_dataPath("20181008")).Skip(1).Select(v => Model.Train.FromCsv(v)).ToList());
+			values.AddRange(File.ReadAllLines(_dataPath("20181009")).Skip(1).Select(v => Model.Train.FromCsv(v)).ToList());
+			values.AddRange(File.ReadAllLines(_dataPath("20181010")).Skip(1).Select(v => Model.Train.FromCsv(v)).ToList());
+			values.AddRange(File.ReadAllLines(_dataPath("20181011")).Skip(1).Select(v => Model.Train.FromCsv(v)).ToList());
+			values.AddRange(File.ReadAllLines(_dataPath("20181012")).Skip(1).Select(v => Model.Train.FromCsv(v)).ToList());
+			values.AddRange(File.ReadAllLines(_dataPath("20181013")).Skip(1).Select(v => Model.Train.FromCsv(v)).ToList());
+			
+			Program.WriteCSV(values, _trainDataNewPath);
+
+			values = File.ReadAllLines(_dataPath("20181014")).Skip(1).Select(v => Model.Train.FromCsv(v)).ToList();
+			Program.WriteCSV(values, _testDataNewPath);
+			*/
+
 			_textLoader = _mlContext.Data.TextReader(new TextLoader.Arguments()
 			{
 				Separator = ",",
 				HasHeader = true,
 				Column = new[]
 					{
-						new TextLoader.Column("VendorId", DataKind.Text, 0),
-						new TextLoader.Column("RateCode", DataKind.Text, 1),
-						new TextLoader.Column("PassengerCount", DataKind.R4, 2),
-						new TextLoader.Column("TripTime", DataKind.R4, 3),
-						new TextLoader.Column("TripDistance", DataKind.R4, 4),
-						new TextLoader.Column("PaymentType", DataKind.Text, 5),
-						new TextLoader.Column("FareAmount", DataKind.R4, 6)
+					/*
+					I1= sbyte
+					U1= byte
+					I2= short
+					U2= ushort
+					I4= int
+					U4= uint
+					I8= long
+					U8= ulong
+					R4= Single
+					R8= Double
+					TX, TXT, Text = ReadOnlyMemory<char> || string
+					BL= bool
+					TS= TimeSpan
+					DT= DateTime
+					DZ= DateTimeOffset
+					UG= UInt128
+					*/
+					new TextLoader.Column("Bod1Cis", DataKind.I4, 0),
+					new TextLoader.Column("Bod2Cis", DataKind.I4, 1),
+					new TextLoader.Column("CasCesty", DataKind.R4, 2),
+					new TextLoader.Column("Dlzka", DataKind.R4, 3),
+					new TextLoader.Column("Druh", DataKind.TXT,4),
+					new TextLoader.Column("Hmot", DataKind.R4, 5),
+					new TextLoader.Column("Loko", DataKind.R4, 6),
+					new TextLoader.Column("MeskanieOdchod", DataKind.R4,7),
+					new TextLoader.Column("PocNaprav", DataKind.R4, 8),
+					new TextLoader.Column("PocVoznov", DataKind.R4, 9),
+					new TextLoader.Column("Vlak", DataKind.R4, 10),
 					}
 			}
 			);
 		}
 		public void Train()
 		{
-			IDataView dataView = _textLoader.Read(_trainDataPath);
-			var pipeline = _mlContext.Transforms.CopyColumns("FareAmount", "Label")
-				.Append(_mlContext.Transforms.Categorical.OneHotEncoding("VendorId"))
-				.Append(_mlContext.Transforms.Categorical.OneHotEncoding("RateCode"))
-				.Append(_mlContext.Transforms.Categorical.OneHotEncoding("PaymentType"))
-				.Append(_mlContext.Transforms.Concatenate("Features", "VendorId", "RateCode", "PassengerCount", "TripTime", "TripDistance", "PaymentType"))
+			IDataView dataView = _textLoader.Read(_trainDataNewPath);
+			var pipeline = _mlContext.Transforms.CopyColumns("CasCesty", "Label")
+				.Append(_mlContext.Transforms.Categorical.OneHotEncoding("Bod1Cis"))
+				.Append(_mlContext.Transforms.Categorical.OneHotEncoding("Bod2Cis"))
+				.Append(_mlContext.Transforms.Categorical.OneHotEncoding("Druh"))
+				.Append(_mlContext.Transforms.Categorical.OneHotEncoding("Loko"))
+				.Append(_mlContext.Transforms.Categorical.OneHotEncoding("Vlak"))
+				.Append(_mlContext.Transforms.Concatenate("Features", "Bod1Cis", "Bod2Cis", "Dlzka", "Druh", "Hmot", "Loko", "MeskanieOdchod", "PocNaprav", "PocVoznov", "Vlak"))
 				.Append(_mlContext.Regression.Trainers.FastTree());
 
 			_model = pipeline.Fit(dataView);
@@ -69,7 +107,7 @@ namespace MLCore
 		}
 		public void Evaluate()
 		{
-			IDataView dataView = _textLoader.Read(_testDataPath);
+			IDataView dataView = _textLoader.Read(_testDataNewPath);
 			var predictions = _model.Transform(dataView);
 			var metrics = _mlContext.Regression.Evaluate(predictions, "Label", "Score");
 			Console.WriteLine();
@@ -87,4 +125,3 @@ namespace MLCore
 		}
 	}
 }
-*/
