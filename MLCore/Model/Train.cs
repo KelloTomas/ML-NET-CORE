@@ -22,11 +22,11 @@ namespace MLCore.Model
 			train.Loko = values[10];
 			train.Odch = Convert.ToDateTime(values[11]);
 			train.Prich = Convert.ToDateTime(values[12]);
-			train.GvdOdch = string.IsNullOrWhiteSpace(values[13]) ? Convert.ToDateTime(values[11]) : Convert.ToDateTime(values[13]);
-			train.GvdPrich = string.IsNullOrWhiteSpace(values[14]) ? Convert.ToDateTime(values[12]) : Convert.ToDateTime(values[14]);
-			train.MeskanieOdchod = (float)(train.GvdOdch - train.Odch).TotalSeconds;
-			train.MeskaniePrichod = (float)(train.GvdPrich - train.Prich).TotalSeconds;
-			train.CasCesty = (float)(train.GvdPrich - train.GvdOdch).TotalSeconds;
+			train.GvdOdch = Convert.ToDateTime(values[13]);
+			train.GvdPrich = Convert.ToDateTime(values[14]);
+			train.MeskanieOdchod = (int)(train.GvdOdch - train.Odch).TotalSeconds;
+			train.MeskaniePrichod = (int)(train.GvdPrich - train.Prich).TotalSeconds;
+			train.CasCesty = (int)(train.GvdPrich - train.GvdOdch).TotalSeconds;
 			return train;
 		}
 		[Column("0")]
@@ -42,10 +42,10 @@ namespace MLCore.Model
 		public string Bod2Naz;
 
 		[Column("4")]
-		public float CasCesty { get; set; }
+		public int CasCesty { get; set; }
 
 		[Column("5")]
-		public float Dlzka { get; set; }
+		public int Dlzka { get; set; }
 
 		[Column("6")]
 		public string Druh { get; set; }
@@ -57,36 +57,37 @@ namespace MLCore.Model
 		public DateTime GvdPrich;
 
 		[Column("9")]
-		public float Hmot { get; set; }
+		public int Hmot { get; set; }
 
 		[Column("10")]
 		public string Loko { get; set; }
 
 		[Column("11")]
-		public float MeskanieOdchod { get; set; }
+		public int MeskanieOdchod { get; set; }
 
 		[Column("12")]
-		public float MeskaniePrichod;
+		public int MeskaniePrichod;
 
 		[Column("13")]
 		public DateTime Odch;
 
 		[Column("14")]
-		public float PocNaprav { get; set; }
+		public int PocNaprav { get; set; }
 
 		[Column("15")]
-		public float PocVoznov { get; set; }
+		public int PocVoznov { get; set; }
 
 		[Column("16")]
 		public DateTime Prich;
 
 		[Column("17")]
-		public float Vlak { get; set; }
+		public int Vlak { get; set; }
+		public string TelCislo { get; set; }
 	}
 
 	public class TrainFarePrediction
 	{
 		[ColumnName("Score")]
-		public float CasCesty;
+		public int CasCesty;
 	}
 }

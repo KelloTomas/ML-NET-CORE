@@ -1,9 +1,10 @@
-﻿using System;
+﻿using MLCore.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
+using System.Text;
 
 namespace MLCore
 {
@@ -12,6 +13,36 @@ namespace MLCore
 
 		private static void Main(string[] args)
 		{
+			var db = new Models.TrainsDbContext();
+			DirectoryInfo d = new DirectoryInfo(@"D:\data_20190226");//Assuming Test is your Folder
+			FileInfo[] Files = d.GetFiles("*.csv"); //Getting Text files
+			foreach (FileInfo file in Files)
+			{
+				using (var sr = new StreamReader(file.FullName, Encoding.GetEncoding("ISO-8859-1")))
+				{
+
+					sr.ReadLine();
+					using (var sw = new StreamWriter(@"D:\merge.csv", true))
+						sw.Write(sr.ReadToEnd());
+					Console.Write(".");
+					continue;
+					int count = 0;
+					string line;
+					while ((line = sr.ReadLine()) != null)
+					{
+						count++;
+						var train = Trains.FromCsv(line);
+						db.Trains.Add(train);
+					}
+					db.SaveChanges();
+					Console.WriteLine($"Importet file: {file.Name}");
+					Console.WriteLine($"Records: {count}");
+				}
+			}
+
+			Console.WriteLine("finished");
+			Console.ReadLine();
+			return;
 			DateTime dt = DateTime.Now;
 
 			//IModel model = new TaxiFastTreeNew(); // R2 Score: 0.92	RMS loss: 2.81

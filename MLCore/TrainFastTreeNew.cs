@@ -30,19 +30,21 @@ namespace MLCore
 		{
 			/*
 			to convert raw data to train and test data
+			*/
 			List<Train> values = new List<Train>();
 			values.AddRange(File.ReadAllLines(_dataPath("20181008")).Skip(1).Select(v => Model.Train.FromCsv(v)).ToList());
 			values.AddRange(File.ReadAllLines(_dataPath("20181009")).Skip(1).Select(v => Model.Train.FromCsv(v)).ToList());
+			/*
 			values.AddRange(File.ReadAllLines(_dataPath("20181010")).Skip(1).Select(v => Model.Train.FromCsv(v)).ToList());
 			values.AddRange(File.ReadAllLines(_dataPath("20181011")).Skip(1).Select(v => Model.Train.FromCsv(v)).ToList());
 			values.AddRange(File.ReadAllLines(_dataPath("20181012")).Skip(1).Select(v => Model.Train.FromCsv(v)).ToList());
 			values.AddRange(File.ReadAllLines(_dataPath("20181013")).Skip(1).Select(v => Model.Train.FromCsv(v)).ToList());
+			 */
 			
 			Program.WriteCSV(values, _trainDataNewPath);
 
-			values = File.ReadAllLines(_dataPath("20181014")).Skip(1).Select(v => Model.Train.FromCsv(v)).ToList();
+			values = File.ReadAllLines(_dataPath("20181010")).Skip(1).Select(v => Model.Train.FromCsv(v)).ToList();
 			Program.WriteCSV(values, _testDataNewPath);
-			*/
 
 			_textLoader = _mlContext.Data.TextReader(new TextLoader.Arguments()
 			{
