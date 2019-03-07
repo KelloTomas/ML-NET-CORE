@@ -35,13 +35,14 @@ namespace MLCore.Models
 			train.PocVoznov = Convert.ToInt32(values[8]);
 			train.PocNaprav = Convert.ToInt32(values[9]);
 			train.Loko = values[10];
-			train.Odch = values[11].ToDateTime();
-			train.Prich = values[12].ToDateTime();
+			train.Odch = values[11].ToDateTimeSafe();
+			train.Prich = values[12].ToDateTimeSafe();
 			train.GvdOdch = values[13].ToDateTimeSafe();
 			train.GvdPrich = values[14].ToDateTimeSafe();
-			train.MeskanieOdchod = train.GvdOdch.HasValue ? (int)(train.GvdOdch - train.Odch).Value.TotalSeconds : (int?)null;
-			train.MeskaniePrichod = train.GvdPrich.HasValue ? (int)(train.GvdPrich - train.Prich).Value.TotalSeconds : (int?)null;
-			train.CasCesty = train.GvdOdch.HasValue && train.GvdPrich.HasValue ? (int)(train.GvdPrich - train.GvdOdch).Value.TotalSeconds : (int?)null;
+			train.MeskanieOdchod = train.GvdOdch.HasValue ? (int)(train.Odch - train.GvdOdch).Value.TotalSeconds : (int?)null;
+			train.MeskaniePrichod = train.GvdPrich.HasValue ? (int)(train.Prich - train.GvdPrich).Value.TotalSeconds : (int?)null;
+			train.CasCesty = train.Odch.HasValue && train.Prich.HasValue ? (int)(train.Prich - train.Odch).Value.TotalSeconds : (int?)null;
+			train.GvdCasCesty = train.GvdOdch.HasValue && train.GvdPrich.HasValue ? (int)(train.GvdPrich - train.GvdOdch).Value.TotalSeconds : (int?)null;
 
 			values = csvLine.Split('"');
 			train.StrojveduciCislo = System.Text.RegularExpressions.Regex.Match(values[1], @"\d+").Value;
@@ -53,19 +54,20 @@ namespace MLCore.Models
 		public string Bod1Naz { get; set; }
 		public int Bod2Cis { get; set; }
 		public string Bod2Naz { get; set; }
-		public int? CasCesty { get; set; }
 		public int Dlzka { get; set; }
 		public string Druh { get; set; }
 		public DateTime? GvdOdch { get; set; }
 		public DateTime? GvdPrich { get; set; }
+		public int? GvdCasCesty { get; set; }
+		public DateTime? Odch { get; set; }
+		public DateTime? Prich { get; set; }
+		public int? CasCesty { get; set; }
 		public int Hmot { get; set; }
 		public string Loko { get; set; }
 		public int? MeskanieOdchod { get; set; }
 		public int? MeskaniePrichod { get; set; }
-		public DateTime Odch { get; set; }
 		public int PocNaprav { get; set; }
 		public int PocVoznov { get; set; }
-		public DateTime Prich { get; set; }
 		public int Vlak { get; set; }
 		public string StrojveduciCislo { get; set; }
 	}

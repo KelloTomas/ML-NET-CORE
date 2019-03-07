@@ -24,9 +24,6 @@ namespace MLCore.Model
 			train.Prich = Convert.ToDateTime(values[12]);
 			train.GvdOdch = Convert.ToDateTime(values[13]);
 			train.GvdPrich = Convert.ToDateTime(values[14]);
-			train.MeskanieOdchod = (int)(train.GvdOdch - train.Odch).TotalSeconds;
-			train.MeskaniePrichod = (int)(train.GvdPrich - train.Prich).TotalSeconds;
-			train.CasCesty = (int)(train.GvdPrich - train.GvdOdch).TotalSeconds;
 			return train;
 		}
 		[Column("0")]

@@ -20,23 +20,27 @@ namespace MLCore
 			{
 				using (var sr = new StreamReader(file.FullName, Encoding.GetEncoding("ISO-8859-1")))
 				{
-
 					sr.ReadLine();
-					using (var sw = new StreamWriter(@"D:\merge.csv", true))
-						sw.Write(sr.ReadToEnd());
-					Console.Write(".");
-					continue;
-					int count = 0;
-					string line;
-					while ((line = sr.ReadLine()) != null)
+					if (false)
 					{
-						count++;
-						var train = Trains.FromCsv(line);
-						db.Trains.Add(train);
+						using (var sw = new StreamWriter(@"D:\merge.csv", true))
+							sw.Write(sr.ReadToEnd());
+						Console.Write(".");
 					}
-					db.SaveChanges();
-					Console.WriteLine($"Importet file: {file.Name}");
-					Console.WriteLine($"Records: {count}");
+					else
+					{
+						int count = 0;
+						string line;
+						while ((line = sr.ReadLine()) != null)
+						{
+							count++;
+							var train = Trains.FromCsv(line);
+							db.Trains.Add(train);
+						}
+						db.SaveChanges();
+						Console.WriteLine($"Importet file: {file.Name}");
+						Console.WriteLine($"Records: {count}");
+					}
 				}
 			}
 
