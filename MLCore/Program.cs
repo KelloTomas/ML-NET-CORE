@@ -14,7 +14,7 @@ namespace MLCore
 		private static void Main(string[] args)
 		{
 			var db = new Models.TrainsDbContext();
-			DirectoryInfo d = new DirectoryInfo(@"D:\data_20190226");//Assuming Test is your Folder
+			DirectoryInfo d = new DirectoryInfo(@"D:\vlaky");//Assuming Test is your Folder
 			FileInfo[] Files = d.GetFiles("*.csv"); //Getting Text files
 			foreach (FileInfo file in Files)
 			{
