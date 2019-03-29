@@ -15,33 +15,21 @@ namespace MLCore
 		{
 			var db = new Models.TrainsDbContext();
 			DirectoryInfo d = new DirectoryInfo(@"D:\vlaky");//Assuming Test is your Folder
-			FileInfo[] Files = d.GetFiles("*.csv"); //Getting Text files
+			FileInfo[] Files = d.GetFiles("*.csv");
 			foreach (FileInfo file in Files)
 			{
-				using (var sr = new StreamReader(file.FullName, Encoding.GetEncoding("ISO-8859-1")))
+				FileHelpers.FileHelperEngine<Trains> engine = new FileHelpers.FileHelperEngine<Trains>(Encoding.GetEncoding("ISO-8859-1"));
+				Trains[] trains = engine.ReadFile(file.FullName);
+				int count = 0;
+				foreach (var train in trains)
 				{
-					sr.ReadLine();
-					if (false)
-					{
-						using (var sw = new StreamWriter(@"D:\merge.csv", true))
-							sw.Write(sr.ReadToEnd());
-						Console.Write(".");
-					}
-					else
-					{
-						int count = 0;
-						string line;
-						while ((line = sr.ReadLine()) != null)
-						{
-							count++;
-							var train = Trains.FromCsv(line);
-							db.Trains.Add(train);
-						}
-						db.SaveChanges();
-						Console.WriteLine($"Importet file: {file.Name}");
-						Console.WriteLine($"Records: {count}");
-					}
+					count++;
+					db.Trains.Add(train);
 				}
+				db.SaveChanges();
+				Console.WriteLine($"Importet file: {file.Name}");
+				Console.WriteLine($"Records: {count}");
+				//ReadFileLineByLine(db, file);
 			}
 
 			Console.WriteLine("finished");
@@ -64,6 +52,35 @@ namespace MLCore
 			Console.WriteLine($"\n\n Time to calculate: {ts.ToString(@"hh\:mm\:ss\.ffff")}");
 			Console.ReadLine();
 		}
+
+		private static void ReadFileLineByLine(TrainsDbContext db, FileInfo file)
+		{
+			using (var sr = new StreamReader(file.FullName, Encoding.GetEncoding("ISO-8859-1")))
+			{
+				sr.ReadLine();
+				if (false)
+				{
+					using (var sw = new StreamWriter(@"D:\merge.csv", true))
+						sw.Write(sr.ReadToEnd());
+					Console.Write(".");
+				}
+				else
+				{
+					int count = 0;
+					string line;
+					while ((line = sr.ReadLine()) != null)
+					{
+						count++;
+						var train = Trains.FromCsv(line);
+						db.Trains.Add(train);
+					}
+					db.SaveChanges();
+					Console.WriteLine($"Importet file: {file.Name}");
+					Console.WriteLine($"Records: {count}");
+				}
+			}
+		}
+
 		public static void WriteCSV<T>(IEnumerable<T> items, string path)
 		{
 			Type itemType = typeof(T);
