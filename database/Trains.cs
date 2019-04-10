@@ -1,14 +1,15 @@
-﻿using System;
+﻿using FileHelpers;
+using System;
 using System.Globalization;
 
-namespace MLCore.Models
+namespace Database
 {
 	public static class Extensions
 	{
 		public static DateTime? ToDateTimeSafe(this string dateTime)
 		{
 			if (string.IsNullOrWhiteSpace(dateTime))
-				return (DateTime?)null;
+				return null;
 			else
 				return
 					dateTime.ToDateTime();
@@ -18,6 +19,7 @@ namespace MLCore.Models
 			return DateTime.ParseExact(dateTime, "d. M. yyyy H:mm:ss", CultureInfo.InvariantCulture);
 		}
 	}
+	[DelimitedRecord(";"), IgnoreFirst(1)]
 	public partial class Trains
 	{
 		public static Trains FromCsv(string csvLine)
@@ -41,34 +43,41 @@ namespace MLCore.Models
 			train.GvdOdch = values[14].ToDateTimeSafe();
 			train.GvdPrich = values[15].ToDateTimeSafe();
 			train.StrojveduciCislo = values[16].Trim('"');
-			train.MeskanieOdchod = train.GvdOdch.HasValue ? (int)(train.Odch - train.GvdOdch).Value.TotalSeconds : (int?)null;
-			train.MeskaniePrichod = train.GvdPrich.HasValue ? (int)(train.Prich - train.GvdPrich).Value.TotalSeconds : (int?)null;
-			train.CasCesty = train.Odch.HasValue && train.Prich.HasValue ? (int)(train.Prich - train.Odch).Value.TotalSeconds : (int?)null;
-			train.GvdCasCesty = train.GvdOdch.HasValue && train.GvdPrich.HasValue ? (int)(train.GvdPrich - train.GvdOdch).Value.TotalSeconds : (int?)null;
 
 			return train;
 		}
-		public int Id { get; set; }
 		public int Bod1Cis { get; set; }
-		public string Bod1Naz { get; set; }
 		public int Bod2Cis { get; set; }
+		public string Bod1Naz { get; set; }
 		public string Bod2Naz { get; set; }
 		public int VlakId { get; set; }
 		public int Vlak { get; set; }
 		public string Druh { get; set; }
-		public string Loko { get; set; }
 		public int Hmot { get; set; }
 		public int Dlzka { get; set; }
-		public int PocNaprav { get; set; }
 		public int PocVoznov { get; set; }
-		public string StrojveduciCislo { get; set; }
-		public DateTime? GvdOdch { get; set; }
-		public DateTime? GvdPrich { get; set; }
-		public int? GvdCasCesty { get; set; }
+		public int PocNaprav { get; set; }
+		public string Loko { get; set; }
+		[FieldConverter(ConverterKind.Date, "d. M. yyyy H:mm:ss")]
 		public DateTime? Odch { get; set; }
+		[FieldConverter(ConverterKind.Date, "d. M. yyyy H:mm:ss")]
 		public DateTime? Prich { get; set; }
-		public int? CasCesty { get; set; }
-		public int? MeskanieOdchod { get; set; }
-		public int? MeskaniePrichod { get; set; }
+		[FieldConverter(ConverterKind.Date, "d. M. yyyy H:mm:ss")]
+		public DateTime? GvdOdch { get; set; }
+		[FieldConverter(ConverterKind.Date, "d. M. yyyy H:mm:ss")]
+		public DateTime? GvdPrich { get; set; }
+	    [FieldOptional]
+		public string StrojveduciCislo { get; set; }
+	    [FieldOptional]
+		public int? GvdCasCesty { get { return GvdOdch.HasValue && GvdPrich.HasValue ? (int)(GvdPrich - GvdOdch).Value.TotalSeconds : (int?)null; } }
+	    [FieldOptional]
+		public int? CasCesty { get { return Odch.HasValue && Prich.HasValue ? (int)(Prich - Odch).Value.TotalSeconds : (int?)null; } }
+	    [FieldOptional]
+		public int? MeskanieOdchod { get { return GvdOdch.HasValue ? (int)(Odch - GvdOdch).Value.TotalSeconds : (int?)null; } }
+	    [FieldOptional]
+		public int? MeskaniePrichod { get { return GvdPrich.HasValue ? (int)(Prich - GvdPrich).Value.TotalSeconds : (int?)null; } }
+		[FieldNullValue((int)0)] 
+	    [FieldOptional]
+		public int Id { get; set; }
 	}
 }

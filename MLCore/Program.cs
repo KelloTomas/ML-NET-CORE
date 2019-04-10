@@ -1,4 +1,4 @@
-﻿using MLCore.Models;
+﻿using Database;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,12 +13,14 @@ namespace MLCore
 
 		private static void Main(string[] args)
 		{
-			var db = new Models.TrainsDbContext();
-			DirectoryInfo d = new DirectoryInfo(@"D:\vlaky");//Assuming Test is your Folder
+			/*
+			var db = new TrainsDbContext();
+			DirectoryInfo d = new DirectoryInfo(@"C:\vlaky");//Assuming Test is your Folder
 			FileInfo[] Files = d.GetFiles("*.csv");
 			foreach (FileInfo file in Files)
 			{
 				FileHelpers.FileHelperEngine<Trains> engine = new FileHelpers.FileHelperEngine<Trains>(Encoding.GetEncoding("ISO-8859-1"));
+				engine.HeaderText = engine.GetFileHeader().Remove(0,3);
 				Trains[] trains = engine.ReadFile(file.FullName);
 				int count = 0;
 				foreach (var train in trains)
@@ -35,6 +37,7 @@ namespace MLCore
 			Console.WriteLine("finished");
 			Console.ReadLine();
 			return;
+			*/
 			DateTime dt = DateTime.Now;
 
 			//IModel model = new TaxiFastTreeNew(); // R2 Score: 0.92	RMS loss: 2.81
