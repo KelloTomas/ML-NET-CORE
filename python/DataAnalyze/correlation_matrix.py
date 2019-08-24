@@ -15,7 +15,7 @@ d = pd.DataFrame(SQL_Query)
 # Convert categorical columns to numeric
 
 for col in d.select_dtypes(include=['object']).columns.values:
-	d[col] = pd.Categorical(d[col]).codes
+    d[col] = pd.Categorical(d[col]).codes
 
 
 # Compute the correlation matrix
@@ -35,5 +35,5 @@ cmap = sns.diverging_palette(220, 10, as_cmap=True)
 sns.heatmap(corr, mask=mask, cmap=cmap, center=0,
             square=True, linewidths=.5, cbar_kws={"shrink": .5})
 #fig = plt.figure()
-plt.title('Correlation matrix')
+plt.title('Correlation matrix\nAll trains')
 plt.show()
