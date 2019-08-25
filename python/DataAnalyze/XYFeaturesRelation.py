@@ -1,14 +1,30 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pyodbc
+import sys
 
-trainTypes = ['Pn']
+if (len(sys.argv)<5):
+    print('not enought parameters')
+    sys.exit()
+
+serverAddress = sys.argv[1]
+databaseName = sys.argv[2]
+login = sys.argv[3]
+pwd = sys.argv[4]
+trainTypes = sys.argv[5:]
 
 datanew = ([list(),list()], [list(),list()], [list(),list()])
 fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1)
 
 def addPoint(vagony, hmot, dlzka, napravy):
+
+    if (vagony > 60):
+        #return
+        pass
+    if (hmot > 3000):
+        #return
+        pass
     if (vagony != 0):
         if (hmot != 0):
             datanew[0][0] = np.append(datanew[0][0], vagony)
@@ -29,15 +45,15 @@ def addTrend(x, y, color):
 
 def dbExecute(query):
     print(query)
-    conn = pyodbc.connect('DRIVER={SQL Server};SERVER=dokelu.kst.fri.uniza.sk;DATABASE=TrainsDb19-04-02;UID=kello4;PWD=kello4')
+    conn = pyodbc.connect('DRIVER={SQL Server};SERVER='+serverAddress+';DATABASE='+databaseName+';UID='+login+';PWD='+pwd)
     cursor = conn.cursor()
     cursor.execute(query)
     return cursor
 
 if len(trainTypes) == 0:
-	cursor = dbExecute('SELECT MAX(PocVoznov), MAX(Hmot), MAX(Dlzka), MAX(PocNaprav) FROM [TrainsDb19-04-02].[dbo].[Trains] group by vlakid')
+    cursor = dbExecute('SELECT MAX(PocVoznov), MAX(Hmot), MAX(Dlzka), MAX(PocNaprav) FROM [TrainsDb19-04-02].[dbo].[Trains] group by vlakid')
 else:
-	cursor = dbExecute('SELECT MAX(PocVoznov), MAX(Hmot), MAX(Dlzka), MAX(PocNaprav) FROM [TrainsDb19-04-02].[dbo].[Trains] WHERE druh = \'' + '\' OR druh = \''.join(trainTypes) + '\' group by vlakid')
+    cursor = dbExecute('SELECT MAX(PocVoznov), MAX(Hmot), MAX(Dlzka), MAX(PocNaprav) FROM [TrainsDb19-04-02].[dbo].[Trains] WHERE druh = \'' + '\' OR druh = \''.join(trainTypes) + '\' group by vlakid')
 
 step = 1000;
 count = 0;
@@ -54,9 +70,10 @@ for data, color, group in zip(datanew, ("red", "green", "blue"),("weight (" + ad
     ax.scatter(x, y, alpha=0.8, c=color, edgecolors='none', s=30, label=group)
 
 if len(trainTypes) == 0:
-	plt.title('Relations in selected numeric features\n' + str(len(datanew[0][0])) + ' records')
+    plt.title('Relations in selected numeric features\n' + str(len(datanew[0][0])) + ' records')
 else:
-	plt.title('Relations in selected numeric features \n' + ', '.join(trainTypes) + ' trains\n' + str(len(datanew[0][0])) + ' records')
+    plt.title('Relations in selected numeric features \n' + ', '.join(trainTypes) + ' trains\n' + str(len(datanew[0][0])) + ' records')
 plt.legend(loc=2)
 plt.xlabel("Number of wagons")
 plt.show()
+
