@@ -1,4 +1,4 @@
-﻿using Database;
+﻿using Database.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,34 +10,46 @@ namespace MLCore
 {
 	internal class Program
 	{
-
 		private static void Main(string[] args)
 		{
-			/*
-			var db = new TrainsDbContext();
-			DirectoryInfo d = new DirectoryInfo(@"C:\vlaky");//Assuming Test is your Folder
-			FileInfo[] Files = d.GetFiles("*.csv");
-			foreach (FileInfo file in Files)
+			string myDirPath = @"C:\vlaky\archiv_treko2017_2";
+			using (var db = new TrainsDb_200123Context())
 			{
-				FileHelpers.FileHelperEngine<Trains> engine = new FileHelpers.FileHelperEngine<Trains>(Encoding.GetEncoding("ISO-8859-1"));
-				engine.HeaderText = engine.GetFileHeader().Remove(0,3);
-				Trains[] trains = engine.ReadFile(file.FullName);
-				int count = 0;
-				foreach (var train in trains)
+				DirectoryInfo d = new DirectoryInfo(myDirPath);//Assuming Test is your Folder
+				FileInfo[] Files = d.GetFiles("*.csv");
+				foreach (FileInfo file in Files)
 				{
-					count++;
-					db.Trains.Add(train);
+					FileHelpers.FileHelperEngine<CzVelib> engine = new FileHelpers.FileHelperEngine<CzVelib>(Encoding.GetEncoding("ISO-8859-1"));
+					engine.HeaderText = engine.GetFileHeader().Remove(0, 3);
+					engine.ErrorManager.ErrorMode = FileHelpers.ErrorMode.SaveAndContinue;
+					CzVelib[] trains = engine.ReadFile(file.FullName);
+					Array.ForEach(trains, e => e.Id = 0);
+					db.AddRange(trains);
+					db.SaveChanges();
+					/*
+					int count = 0;
+					foreach (var train in trains)
+					{
+						count++;
+						train.Id = 0;
+						db.CzPreosGtn.Add(train);
+						db.SaveChanges();
+					}
+					*/
+					if (engine.ErrorManager.HasErrors)
+						engine.ErrorManager.SaveErrors($"{myDirPath}\\err-{file.Name}.out");
+					Console.WriteLine($"Importet file: {file.Name}");
+					//Console.WriteLine($"Records: {count}");
+					//ReadFileLineByLine(db, file);
 				}
-				db.SaveChanges();
-				Console.WriteLine($"Importet file: {file.Name}");
-				Console.WriteLine($"Records: {count}");
-				//ReadFileLineByLine(db, file);
+
+				Console.WriteLine("finished");
+				Console.ReadLine();
+				return;
 			}
 
-			Console.WriteLine("finished");
-			Console.ReadLine();
-			return;
-			*/
+
+
 			DateTime dt = DateTime.Now;
 
 			//IModel model = new TaxiFastTreeNew(); // R2 Score: 0.92	RMS loss: 2.81
@@ -56,7 +68,7 @@ namespace MLCore
 			Console.ReadLine();
 		}
 
-		private static void ReadFileLineByLine(TrainsDbContext db, FileInfo file)
+		private static void ReadFileLineByLine(TrainsDb_200123Context db, FileInfo file)
 		{
 			using (var sr = new StreamReader(file.FullName, Encoding.GetEncoding("ISO-8859-1")))
 			{
@@ -74,8 +86,8 @@ namespace MLCore
 					while ((line = sr.ReadLine()) != null)
 					{
 						count++;
-						var train = Trains.FromCsv(line);
-						db.Trains.Add(train);
+						var train = new Trains();//Trains.FromCsv(line);
+												 //db.Trains.Add(train);
 					}
 					db.SaveChanges();
 					Console.WriteLine($"Importet file: {file.Name}");

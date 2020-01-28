@@ -66,18 +66,18 @@ namespace Database
 		public DateTime? GvdOdch { get; set; }
 		[FieldConverter(ConverterKind.Date, "d. M. yyyy H:mm:ss")]
 		public DateTime? GvdPrich { get; set; }
-	    [FieldOptional]
+		[FieldOptional]
 		public string StrojveduciCislo { get; set; }
-	    [FieldOptional]
+		[FieldOptional]
 		public int? GvdCasCesty { get { return GvdOdch.HasValue && GvdPrich.HasValue ? (int)(GvdPrich - GvdOdch).Value.TotalSeconds : (int?)null; } }
-	    [FieldOptional]
+		[FieldOptional]
 		public int? CasCesty { get { return Odch.HasValue && Prich.HasValue ? (int)(Prich - Odch).Value.TotalSeconds : (int?)null; } }
-	    [FieldOptional]
+		[FieldOptional]
 		public int? MeskanieOdchod { get { return GvdOdch.HasValue ? (int)(Odch - GvdOdch).Value.TotalSeconds : (int?)null; } }
-	    [FieldOptional]
+		[FieldOptional]
 		public int? MeskaniePrichod { get { return GvdPrich.HasValue ? (int)(Prich - GvdPrich).Value.TotalSeconds : (int?)null; } }
-		[FieldNullValue((int)0)] 
-	    [FieldOptional]
+		[FieldNullValue(0)]
+		[FieldOptional]
 		public int Id { get; set; }
 	}
 }
