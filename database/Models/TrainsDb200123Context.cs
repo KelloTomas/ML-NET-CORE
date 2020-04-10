@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Database.Models
 {
-    public partial class TrainsDb_200123Context : DbContext
+    public partial class TrainsDb200123Context : DbContext
     {
-        public TrainsDb_200123Context()
+        public TrainsDb200123Context()
         {
         }
 
-        public TrainsDb_200123Context(DbContextOptions<TrainsDb_200123Context> options)
+        public TrainsDb200123Context(DbContextOptions<TrainsDb200123Context> options)
             : base(options)
         {
         }
@@ -32,7 +32,7 @@ namespace Database.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=dokelu.kst.fri.uniza.sk;Database=TrainsDb20-01-23;User Id=kello;password=kello;Trusted_Connection=False;");
+                optionsBuilder.UseSqlServer("Server=dokelu.kst.fri.uniza.sk;Database=TrainsDb20-01-23;User Id=kello4;password=kello4;Trusted_Connection=False;");
             }
         }
 
@@ -112,6 +112,10 @@ namespace Database.Models
                     .HasColumnName("PredSR70")
                     .HasColumnType("numeric(18, 0)");
 
+                entity.Property(e => e.Tin)
+                    .HasColumnName("TIN")
+                    .HasColumnType("numeric(18, 0)");
+
                 entity.Property(e => e.ToSr70).HasColumnName("ToSR70");
             });
 
@@ -135,6 +139,10 @@ namespace Database.Models
 
                 entity.Property(e => e.PredSr70)
                     .HasColumnName("PredSR70")
+                    .HasColumnType("numeric(18, 0)");
+
+                entity.Property(e => e.Tin)
+                    .HasColumnName("TIN")
                     .HasColumnType("numeric(18, 0)");
 
                 entity.Property(e => e.ToSr70).HasColumnName("ToSR70");
@@ -287,6 +295,10 @@ namespace Database.Models
                     .HasColumnName("PredSR70")
                     .HasColumnType("numeric(18, 0)");
 
+                entity.Property(e => e.Tin)
+                    .HasColumnName("TIN")
+                    .HasColumnType("numeric(18, 0)");
+
                 entity.Property(e => e.ToSr70).HasColumnName("ToSR70");
             });
 
@@ -310,6 +322,10 @@ namespace Database.Models
 
                 entity.Property(e => e.PredSr70)
                     .HasColumnName("PredSR70")
+                    .HasColumnType("numeric(18, 0)");
+
+                entity.Property(e => e.Tin)
+                    .HasColumnName("TIN")
                     .HasColumnType("numeric(18, 0)");
 
                 entity.Property(e => e.ToSr70).HasColumnName("ToSR70");

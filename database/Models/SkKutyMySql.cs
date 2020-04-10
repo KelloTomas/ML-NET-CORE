@@ -47,5 +47,6 @@ namespace Database.Models
 		public decimal? PredLength { get; set; }
 		public decimal? PredSr70 { get; set; }
 		public string DriverId { get; set; }
+        public decimal? Tin { get; set; }
 	}
 }
