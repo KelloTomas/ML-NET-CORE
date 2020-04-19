@@ -18,7 +18,7 @@ dbTableNames = [
 	'[SK-Kuty-Oracle]'
 	]
 
-conn = pyodbc.connect('DRIVER={SQL Server};SERVER=dokelu.kst.fri.uniza.sk;DATABASE=' + dbName + ';UID=kello4;PWD=kello4')
+conn = pyodbc.connect('DRIVER={SQL Server};SERVER=dokelu.kst.fri.uniza.sk;DATABASE=' + dbName + ';UID=read;PWD=read')
 for dbTableName in dbTableNames:
 	print('running on table: ' + dbTableName)
 	SQL_Query = pd.read_sql_query('''select * from ''' + dbTableName, conn)

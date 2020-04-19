@@ -7,29 +7,24 @@ import pyodbc
 sns.set(style="white")
 dbName = 'TrainsDb20-01-23'
 
-dbTableNames = ['[CZ-PREOS_GTN]', '[CZ-PREOS_PREOS]', '[CZ-TREKO]', '[CZ-VELIB]', '[SK-BB]', '[SK-CA-MySQL]', '[SK-CA-Oracle]', '[SK-KrasnoNKys-MySQL]', '[SK-KrasnoNKys-Oracle]', '[SK-Kuty-MySQL]', '[SK-Kuty-Oracle]']
+dbTableNames = ['[SK-CA-copy]']
 conn = pyodbc.connect('DRIVER={SQL Server};SERVER=dokelu.kst.fri.uniza.sk;DATABASE=' + dbName + ';UID=read;PWD=read')
 
 for dbTableName in dbTableNames:
 
-	SQL_Query = pd.read_sql_query('''select 
-	      [FromSR70]
-	      ,[ToSR70]
-	      ,[TrainNumber]
-	      ,[TrainType]
-	      ,[Weight]
-	      ,[Length]
-	      ,[CarCount]
-	      ,[AxisCount]
-	      ,[EngineType]
-	      ,[SectIdx]
-	      ,[DepRealTime]
-	      ,[DepILS]
-	      ,[ArrRealTime]
-	      ,[ArrILS]
-	      ,[DepPlanTime]
-	      ,[ArrPlanTime]
-	      ,[DriverId] from ''' + dbTableName, conn)
+	SQL_Query = pd.read_sql_query('''SELECT TOP (1000) 
+       [TrainType]
+      ,[Weight]
+	  ,[DepRealTime]
+      ,[Delay]
+	  ,ROUND([Temp], 0) as Temp
+	  ,ROUND([Wind], 0) as Wind
+	  ,ROUND([WindDirection], 0) as WindDirection
+	  ,ROUND([Precipitation], 0) as Precipitation
+	  ,ROUND([Snow], 0) as Snow
+  FROM [TrainsDb20-01-23].[dbo].''' +
+  dbTableName +
+  '''LEFT JOIN [TrainsDb20-01-23].[dbo].[SK-CA-weather] on DepRealTime > dateFrom and DepRealTime < dateTo''', conn)
 
 	d = pd.DataFrame(SQL_Query)
 
