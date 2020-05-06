@@ -12,19 +12,19 @@ conn = pyodbc.connect('DRIVER={SQL Server};SERVER=dokelu.kst.fri.uniza.sk;DATABA
 
 for dbTableName in dbTableNames:
 
-	SQL_Query = pd.read_sql_query('''SELECT TOP (1000) 
+	SQL_Query = pd.read_sql_query('''SELECT
        [TrainType]
       ,[Weight]
 	  ,[DepRealTime]
-      ,[Delay]
 	  ,ROUND([Temp], 0) as Temp
 	  ,ROUND([Wind], 0) as Wind
 	  ,ROUND([WindDirection], 0) as WindDirection
 	  ,ROUND([Precipitation], 0) as Precipitation
 	  ,ROUND([Snow], 0) as Snow
+      ,[Delay]
   FROM [TrainsDb20-01-23].[dbo].''' +
   dbTableName +
-  '''LEFT JOIN [TrainsDb20-01-23].[dbo].[SK-CA-weather] on DepRealTime > dateFrom and DepRealTime < dateTo''', conn)
+  ''' LEFT JOIN [TrainsDb20-01-23].[dbo].[SK-CA-weather] on DepRealTime > dateFrom and DepRealTime < dateTo''', conn)
 
 	d = pd.DataFrame(SQL_Query)
 
