@@ -3,25 +3,25 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import pyodbc
 import missingno as msno
-dbName = 'TrainsDb20-01-23'
+dbName = 'Kello'
 dbTableNames = [
-	#'[CZ-PREOS_GTN]',
+	'[CZPREOS]'#,
 	#'[CZ-PREOS_PREOS]',
-	'[CZ-TREKO]',
-	'[CZ-VELIB]',
-	'[SK-BB]',
-	'[SK-CA-MySQL]',
-	'[SK-CA-Oracle]',
-	'[SK-KrasnoNKys-MySQL]',
-	'[SK-KrasnoNKys-Oracle]',
-	'[SK-Kuty-MySQL]',
-	'[SK-Kuty-Oracle]'
+	#'[CZ-TREKO]',
+	#'[CZ-VELIB]',
+	#'[SK-BB]',
+	#'[SK-CA-MySQL]',
+	#'[SK-CA-Oracle]',
+	#'[SK-KrasnoNKys-MySQL]',
+	#'[SK-KrasnoNKys-Oracle]',
+	#'[SK-Kuty-MySQL]',
+	#'[SK-Kuty-Oracle]'
 	]
 
 conn = pyodbc.connect('DRIVER={SQL Server};SERVER=dokelu.kst.fri.uniza.sk;DATABASE=' + dbName + ';UID=read;PWD=read')
 for dbTableName in dbTableNames:
 	print('running on table: ' + dbTableName)
-	SQL_Query = pd.read_sql_query('''select * from ''' + dbTableName, conn)
+	SQL_Query = pd.read_sql_query('''select [FromName],[ToName],[TrainId],[TrainNumber],[TrainType],[Weight],[Length],[CarCount],[AxisCount],[EngineType],[DepRealTime],[DepILS],[ArrRealTime],[ArrILS],[DepPlanTime],[ArrPlanTime],[DriverId] from ''' + dbTableName + " where TrainType ='Ex' or TrainType = 'Os' or TrainType = 'R'", conn)
 
 	d = pd.DataFrame(SQL_Query)
 	if d.size == 0:
@@ -35,6 +35,9 @@ for dbTableName in dbTableNames:
 
 	msno.matrix(d)
 
-	#plt.show()
+	plt.title(dbTableName + " vlaky Ex Os R")
+	print("showing")
+	plt.show()
+	print("showed")
 	plt.savefig('C:\\d\\OneDrive - University of Zilina\\skola_FRI_UNIZA\\dizertacka\\data\\' + dbTableName + ' missing values.png')
 
