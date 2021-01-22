@@ -1,8 +1,8 @@
 import pyodbc
 import pandas as pd
 
-dbName = 'TrainsDb20-01-23'
-dbTableName = 'SK-Kuty'
+dbName = 'kello'
+dbTableName = 'czpreos'
 conn = pyodbc.connect('DRIVER={SQL Server};SERVER=dokelu.kst.fri.uniza.sk;DATABASE=' + dbName + ';UID=read;PWD=read')
 
 
@@ -17,3 +17,15 @@ for x in range(0,len(stationNames)):
 
 print("UPDATE [" + dbTableName + "stanica] SET [RealWaitTime]=DATEDIFF(SECOND, ArrRealTime, DepRealTime), [PlanWaitTime]=DATEDIFF(SECOND, ArrPlanTime, DepPlanTime), [DelayArrive]=DATEDIFF(SECOND,ArrPlanTime, ArrRealTime), [DelayDeparture]=DATEDIFF(SECOND,DepPlanTime, DepRealTime)")
 print("UPDATE [" + dbTableName + "stanica] SET [Delay]=RealWaitTime-PlanWaitTime")
+
+
+DELETE xxx WHERE ArrRealTime is null
+DELETE xxx WHERE DepRealTime is null
+DELETE xxx WHERE ArrPlanTime is null
+DELETE xxx WHERE DepPlanTime is null
+
+UPDATE xxx SET [RealDrivingTime] = DATEDIFF(second,DepRealTime, ArrRealTime), [PlanDrivingTime] = DATEDIFF(second,DepPlanTime, ArrPlanTime), [DelayDeparture] = DATEDIFF(second,DepPlanTime, DepRealTime), [DelayArrive] = DATEDIFF(second,ArrPlanTime, ArrRealTime)
+UPDATE xxx SET [Delay] = RealDrivingTime - PlanDrivingTime
+
+UPDATE a SET a.Temp = b.TurzovkaTemp, a.Precipitation = b.TurzovkaPrecipitation, a.Snow = b.TurzovkaSnow, a.Wind = b.TurzovkaWind, a.WindDirection = b.TurzovkaWindDirection FROM xxx a INNER JOIN yyy b on a.DateFrom = b.DateFrom
+update xxx set planspeed = 3600*LengthSect/PlanDrivingTime, realspeed = 3600*LengthSect/RealDrivingTime where ArrRealTime <> DepRealTime
