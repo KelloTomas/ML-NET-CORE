@@ -8,7 +8,6 @@ sns.set(style="white")
 dbName = 'Kello'
 
 dbTableNames = ['[CZPREOSstanica]']
-dbTrainType = ['Ex', 'Lv', 'Mn', 'Nex', 'Os', 'Pn', 'R', 'Sluz', 'Sv']
 dbTrainType = ['Ex', 'Lv', 'Mn', 'Nex', 'Os', 'Pn', 'R', 'Sv']
 dbTrainTypeWithCount = []
 

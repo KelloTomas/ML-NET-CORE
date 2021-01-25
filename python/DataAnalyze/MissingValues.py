@@ -39,5 +39,3 @@ for dbTableName in dbTableNames:
 	print("showing")
 	plt.show()
 	print("showed")
-	plt.savefig('C:\\d\\OneDrive - University of Zilina\\skola_FRI_UNIZA\\dizertacka\\data\\' + dbTableName + ' missing values.png')
-
