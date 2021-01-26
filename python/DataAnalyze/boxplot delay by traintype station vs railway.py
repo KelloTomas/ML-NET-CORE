@@ -3,11 +3,13 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import pyodbc
-sns.set(style="white")
+sns.set_style("whitegrid")
+
 dbName = 'Kello'
 
 dbTableName = 'CZPREOS'
 dbTrainType = ['Ex', 'Lv', 'Mn', 'Nex', 'Os', 'Pn', 'R', 'Sv']
+#dbTrainType = ['Sluz']
 
 conn = pyodbc.connect('DRIVER={SQL Server};SERVER=dokelu.kst.fri.uniza.sk;DATABASE=' + dbName + ';UID=read;PWD=read')
 
