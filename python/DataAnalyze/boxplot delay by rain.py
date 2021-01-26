@@ -4,6 +4,8 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import pyodbc
+import itertools
+
 sns.set(style="white")
 dbName = 'Kello'
 
@@ -23,9 +25,7 @@ for dbTableName in dbTableNames:
 		if (len(x) != 0):
 			a.append(x)
 			r.append(str(rain) + "-" + str((rain+step-0.1)))
-	print(len(a))
-	print(len(r))
-	d = pd.DataFrame([*zip(*a)], columns=r)
+	d = pd.DataFrame(itertools.zip_longest(*a), columns=r)
 	d.plot.box(grid='True', showfliers=False)
 	plt.xlabel('Precipitation [mm]')
 	plt.ylabel('Delay [s]')
