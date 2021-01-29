@@ -1,17 +1,11 @@
-#from string import ascii_letters
-#import numpy as np
 import pandas as pd
-import seaborn as sns
 import pyodbc
 import matplotlib.pyplot as plt
 from sklearn import datasets, linear_model
 from sklearn.metrics import mean_squared_error, r2_score
 
-#sns.set(style="white")
 dbName = 'Kello'
 dbTableName = '[CZPREOShistory]'
-dbTrainType = ['Ex', 'Lv', 'Mn', 'Nex', 'Os', 'Pn', 'R', 'Sv']
-dbTrainTypeWithCount = []
 testCount = 15000
 conn = pyodbc.connect('DRIVER={SQL Server};SERVER=dokelu.kst.fri.uniza.sk;DATABASE=' + dbName + ';UID=read;PWD=read')
 
@@ -74,7 +68,7 @@ print('Mean squared original error: %.2f'
 print('Coefficient of original determination: %.2f'
       % r2_score(y_test, np.zeros(len(y_pred))))
 
-# Plot outputs nefunguje
+# Plot outputs nefunguje, asi podporuje len jednorozmerne pole vstupu
 #plt.scatter(x_test, y_test,  color='black')
 #plt.plot(x_test, y_pred, color='blue', linewidth=3)
 
